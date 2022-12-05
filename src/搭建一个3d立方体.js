@@ -1,16 +1,15 @@
 
 import * as THREE from "three"
 
-// 引入控制器
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
-
-// 目标：使用控制器
+// 目标： 了解three.js，搭建一个3d的立方体
 
 
-//创建场景
+// 创建场景
+
 const scene = new THREE.Scene()
 
 // 创建相机
+
 /*
     PerspectiveCamera( fov : Number, aspect : Number, near : Number, far : Number )
         fov — 摄像机视锥体垂直视野角度
@@ -18,6 +17,7 @@ const scene = new THREE.Scene()
         near — 摄像机视锥体近端面
         far — 摄像机视锥体远端面
 */
+
 // 透视相机
 const camera = new THREE.PerspectiveCamera(
     75, // 摄像机视锥体垂直视野角度，从视图的底部到顶部，以角度来表示。默认值是50。
@@ -27,9 +27,8 @@ const camera = new THREE.PerspectiveCamera(
 )
 
 // 创建渲染器
-const renderer = new THREE.WebGLRenderer({
-    antialias: true, // 开启抗锯齿
-});
+const renderer = new THREE.WebGLRenderer();
+
 // 设置大小
 renderer.setSize(
     1000, // 宽度
@@ -38,14 +37,9 @@ renderer.setSize(
 //挂载到页面
 document.body.appendChild(renderer.domElement)
 
-// 添加控制器
-const controls = new OrbitControls( camera, renderer.domElement );
-// 开启控制器的阻尼效果
-controls.enableDamping = true
-// 使用控制器
-controls.update()
 
 // 添加物体
+
 /*
     width:立方体x轴的长度,
     height:立方体y轴的长度,
@@ -58,6 +52,7 @@ let geometry = new THREE.BoxGeometry(10, 10, 10);
 
 // 添加材质
 const materials = []
+
 for(let i = 0; i < 6; i++){
     materials.push(new THREE.MeshBasicMaterial({ color: Math.random() * 0x00ff0000 }))
 }
@@ -82,7 +77,9 @@ function animate() {
     // 使用 requestAnimationFrame 执行动画
     requestAnimationFrame(animate)
 
-    controls.update()
+    // 修改其旋转的度数，让其每次渲染增加0.01的弧段进行渲染
+    cube.rotation.x += 0.01;
+	cube.rotation.y += 0.01;
 
     //scene:前面定义的场景,camera:前面定义的相机
     //renderTarget:渲染的目标默认是是渲染到前面定义的render变量中
