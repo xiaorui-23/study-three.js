@@ -3,9 +3,10 @@
 import * as THREE from "three"
 // 引入控制器
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+// 引入 gsap 动画库
+import gsap from "gsap"
 
-
-// 目标：实现画布响应式，设置画布全屏、退出全屏
+// 目标：使用gasp动画库，让我们的动画给流畅
 
 //创建场景
 const scene = new THREE.Scene()
@@ -33,7 +34,7 @@ const renderer = new THREE.WebGLRenderer({
 // 设置大小
 renderer.setSize(
     window.innerWidth, // 宽度
-    window.innerHeight // 高度
+    500 // 高度
 );
 //挂载到页面
 document.body.appendChild(renderer.domElement)
@@ -80,40 +81,28 @@ scene.background = new THREE.Color(0xffffcc99)
 const axesHelper = new THREE.AxesHelper(20)
 scene.add( axesHelper )
 
-// 添加窗口变化监听器
-addEventListener('resize', () => {
-    // 更新修改相机比例
-    camera.aspect = window.innerWidth / window.innerHeight
-    // 更新摄像机的投影矩阵
-    camera.updateProjectionMatrix()
-    // 更新画布大小
-    renderer.setSize(
-        window.innerWidth, // 宽度
-        window.innerHeight // 高度
-    );
-    // 更新画布像素比
-    renderer.setPixelRatio(window.devicePixelRatio)
-})
-
-// 监听鼠标双击事件
-addEventListener('dblclick', () => {
-    // 获取当前状态
-    const fullscreenElement = document.fullscreenElement
-    if(fullscreenElement){
-        // 退出全屏
-        document.exitFullscreen()
-        
-        return
+// 添加动画-移动
+gsap.to(
+    cube.position, // 需要执行动画的目标对象
+    {// 执行动画的目标参数
+        x: 10, // 使盒子移动到 x 轴为 5 的位置
+        duration: 5, // 需要的时间，5秒
+        ease: 'power1.inOut', // 动画执行方式
+        repeat: -1,//动画执行次数，当执行次数为 -1 时，则无限次数执行
+        yoyo: true, // 添加往返执行
     }
-    // 请求画布全屏
-    renderer.domElement.requestFullscreen()
-})
-
-
-
-
-
-
+)
+// 添加动画-旋转
+gsap.to(
+    cube.rotation, // 需要执行动画的目标对象
+    {// 执行动画的目标参数
+        x: 10, // 使盒子移动到 x 轴为 5 的位置
+        duration: 5, // 需要的时间，5秒
+        ease: 'power1.inOut', // 动画执行方式
+        repeat: -1,//动画执行次数，当执行次数为 -1 时，则无限次数执行
+        yoyo: true, // 添加往返执行
+    }
+)
 
 // 渲染
 function animate() {
