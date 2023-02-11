@@ -1,16 +1,11 @@
 
 import * as THREE from "three"
 
-// 目标：使用 dat.gui 进行 可视化调试
-import * as Dat from "dat.gui";
 
 
 /// 创建场景
 
 const scene = new THREE.Scene()
-
-/// 创建 dat
-const dat = new Dat.GUI();
 
 
 /// 创建相机
@@ -103,24 +98,6 @@ function animate() {
     renderer.render(scene, camera)
 }    
 
-/// 添加菜单
-function addMenuItem () {
-    // x 轴坐标
-    dat
-    .add(cube.position, 'x')
-    .max(10)
-    .min(0)
-    .step(0.01)
-    .name('移动x轴')
-    .onChange(value => {
-        console.log('我是当前正在移动的x轴', value);
-    })
-    .onFinishChange(value => {
-        console.log('我是当前移动结束的x轴', value);
-    })
-}
 
 // 渲染
 animate()
-
-addMenuItem ()
