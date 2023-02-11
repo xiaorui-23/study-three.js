@@ -8,6 +8,7 @@ import * as THREE from "three"
 const scene = new THREE.Scene()
 
 
+
 /// 创建相机
 
 /*
@@ -97,7 +98,6 @@ function animate() {
     //forceClear:每次绘制之前都将画布的内容给清除,即使自动清除标志autoClear为false,也会清除
     renderer.render(scene, camera)
 }    
-
 
 // 渲染
 animate()
