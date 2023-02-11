@@ -1,19 +1,14 @@
 
 import * as THREE from "three"
 
-// 目标：使用 dat.gui 进行 可视化调试
-import * as Dat from "dat.gui";
+// 目标： 了解three.js，搭建一个3d的立方体
 
 
-/// 创建场景
+// 创建场景
 
 const scene = new THREE.Scene()
 
-/// 创建 dat
-const dat = new Dat.GUI();
-
-
-/// 创建相机
+// 创建相机
 
 /*
     PerspectiveCamera( fov : Number, aspect : Number, near : Number, far : Number )
@@ -23,7 +18,7 @@ const dat = new Dat.GUI();
         far — 摄像机视锥体远端面
 */
 
-/// 透视相机
+// 透视相机
 const camera = new THREE.PerspectiveCamera(
     75, // 摄像机视锥体垂直视野角度，从视图的底部到顶部，以角度来表示。默认值是50。
     window.innerWidth / window.innerHeight, // 摄像机视锥体的长宽比，通常是使用画布的宽/画布的高。默认值是1（正方形画布）。
@@ -31,23 +26,19 @@ const camera = new THREE.PerspectiveCamera(
     1000 // 摄像机的远端面，默认值 2000
 )
 
-/// 创建渲染器
+// 创建渲染器
 const renderer = new THREE.WebGLRenderer();
 
-/// 设置大小
+// 设置大小
 renderer.setSize(
     1000, // 宽度
     500 // 高度
 );
-/// 挂载到页面
+//挂载到页面
 document.body.appendChild(renderer.domElement)
 
 
-
-
-
-
-/// 添加物体
+// 添加物体
 
 /*
     width:立方体x轴的长度,
@@ -56,24 +47,19 @@ document.body.appendChild(renderer.domElement)
 */
 let geometry = new THREE.BoxGeometry(10, 10, 10);
 
-
-
-/// 添加材质
+// 添加材质
 // const material = new THREE.MeshBasicMaterial({ color: 0xffff0000 });
 
-/// 添加材质
+// 添加材质
 const materials = []
 
 for(let i = 0; i < 6; i++){
     materials.push(new THREE.MeshBasicMaterial({ color: Math.random() * 0x00ff0000 }))
 }
 
-
-
-/// 添加网格
+// 添加网格
 const cube = new THREE.Mesh( geometry, materials );
 scene.add( cube );
-
 
 // 设置相机位置
 camera.position.z = 50;
@@ -81,13 +67,11 @@ camera.position.z = 50;
 // 修改场景背景颜色
 scene.background = new THREE.Color(0xffffcc99)
 
-
-/// 添加 三色坐标轴
+// 添加 三色坐标轴
 const axesHelper = new THREE.AxesHelper(20)
 scene.add( axesHelper )
 
-
-/// 渲染
+// 渲染
 function animate() {
 
     // 使用 requestAnimationFrame 执行动画
@@ -103,24 +87,5 @@ function animate() {
     renderer.render(scene, camera)
 }    
 
-/// 添加菜单
-function addMenuItem () {
-    // x 轴坐标
-    dat
-    .add(cube.position, 'x')
-    .max(10)
-    .min(0)
-    .step(0.01)
-    .name('移动x轴')
-    .onChange(value => {
-        console.log('我是当前正在移动的x轴', value);
-    })
-    .onFinishChange(value => {
-        console.log('我是当前移动结束的x轴', value);
-    })
-}
-
 // 渲染
 animate()
-
-addMenuItem ()

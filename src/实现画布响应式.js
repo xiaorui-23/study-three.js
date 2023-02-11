@@ -1,20 +1,16 @@
 
+// 引入 three.js
 import * as THREE from "three"
+// 引入控制器
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 
-// 目标：使用 dat.gui 进行 可视化调试
-import * as Dat from "dat.gui";
 
+// 目标：实现画布响应式，设置画布全屏、退出全屏
 
-/// 创建场景
-
+//创建场景
 const scene = new THREE.Scene()
 
-/// 创建 dat
-const dat = new Dat.GUI();
-
-
-/// 创建相机
-
+// 创建相机
 /*
     PerspectiveCamera( fov : Number, aspect : Number, near : Number, far : Number )
         fov — 摄像机视锥体垂直视野角度
@@ -22,8 +18,7 @@ const dat = new Dat.GUI();
         near — 摄像机视锥体近端面
         far — 摄像机视锥体远端面
 */
-
-/// 透视相机
+// 透视相机
 const camera = new THREE.PerspectiveCamera(
     75, // 摄像机视锥体垂直视野角度，从视图的底部到顶部，以角度来表示。默认值是50。
     window.innerWidth / window.innerHeight, // 摄像机视锥体的长宽比，通常是使用画布的宽/画布的高。默认值是1（正方形画布）。
@@ -31,49 +26,49 @@ const camera = new THREE.PerspectiveCamera(
     1000 // 摄像机的远端面，默认值 2000
 )
 
-/// 创建渲染器
-const renderer = new THREE.WebGLRenderer();
-
-/// 设置大小
+// 创建渲染器
+const renderer = new THREE.WebGLRenderer({
+    antialias: true, // 开启抗锯齿
+});
+// 设置大小
 renderer.setSize(
-    1000, // 宽度
-    500 // 高度
+    window.innerWidth, // 宽度
+    window.innerHeight // 高度
 );
-/// 挂载到页面
+//挂载到页面
 document.body.appendChild(renderer.domElement)
 
+// 添加控制器
+const controls = new OrbitControls( camera, renderer.domElement );
+// 开启控制器的阻尼效果
+controls.enableDamping = true
+// 使用控制器
+controls.update()
 
-
-
-
-
-/// 添加物体
-
+// 添加物体
 /*
     width:立方体x轴的长度,
     height:立方体y轴的长度,
     depth:立方体z轴的长度也是深度
 */
-let geometry = new THREE.BoxGeometry(10, 10, 10);
+let geometry = new THREE.BoxGeometry(5, 5, 5);
 
-
-
-/// 添加材质
+// 添加材质
 // const material = new THREE.MeshBasicMaterial({ color: 0xffff0000 });
 
-/// 添加材质
+// 添加材质
 const materials = []
-
 for(let i = 0; i < 6; i++){
-    materials.push(new THREE.MeshBasicMaterial({ color: Math.random() * 0x00ff0000 }))
+    materials.push(
+        new THREE.MeshBasicMaterial({ 
+            color: Math.random() * 0x00ff0000 
+        })
+    )
 }
 
-
-
-/// 添加网格
+// 添加网格
 const cube = new THREE.Mesh( geometry, materials );
 scene.add( cube );
-
 
 // 设置相机位置
 camera.position.z = 50;
@@ -81,21 +76,52 @@ camera.position.z = 50;
 // 修改场景背景颜色
 scene.background = new THREE.Color(0xffffcc99)
 
-
-/// 添加 三色坐标轴
+// 添加 三色坐标轴
 const axesHelper = new THREE.AxesHelper(20)
 scene.add( axesHelper )
 
+// 添加窗口变化监听器
+addEventListener('resize', () => {
+    // 更新修改相机比例
+    camera.aspect = window.innerWidth / window.innerHeight
+    // 更新摄像机的投影矩阵
+    camera.updateProjectionMatrix()
+    // 更新画布大小
+    renderer.setSize(
+        window.innerWidth, // 宽度
+        window.innerHeight // 高度
+    );
+    // 更新画布像素比
+    renderer.setPixelRatio(window.devicePixelRatio)
+})
 
-/// 渲染
+// 监听鼠标双击事件
+addEventListener('dblclick', () => {
+    // 获取当前状态
+    const fullscreenElement = document.fullscreenElement
+    if(fullscreenElement){
+        // 退出全屏
+        document.exitFullscreen()
+        
+        return
+    }
+    // 请求画布全屏
+    renderer.domElement.requestFullscreen()
+})
+
+
+
+
+
+
+
+// 渲染
 function animate() {
 
     // 使用 requestAnimationFrame 执行动画
     requestAnimationFrame(animate)
 
-    // 修改其旋转的度数，让其每次渲染增加0.01的弧段进行渲染
-    cube.rotation.x += 0.01;
-	cube.rotation.y += 0.01;
+    controls.update()
 
     //scene:前面定义的场景,camera:前面定义的相机
     //renderTarget:渲染的目标默认是是渲染到前面定义的render变量中
@@ -103,24 +129,5 @@ function animate() {
     renderer.render(scene, camera)
 }    
 
-/// 添加菜单
-function addMenuItem () {
-    // x 轴坐标
-    dat
-    .add(cube.position, 'x')
-    .max(10)
-    .min(0)
-    .step(0.01)
-    .name('移动x轴')
-    .onChange(value => {
-        console.log('我是当前正在移动的x轴', value);
-    })
-    .onFinishChange(value => {
-        console.log('我是当前移动结束的x轴', value);
-    })
-}
-
 // 渲染
 animate()
-
-addMenuItem ()

@@ -123,4 +123,5 @@ function addMenuItem () {
 // 渲染
 animate()
 
+// 添加菜单
 addMenuItem ()
